@@ -1,0 +1,231 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:13px}
+.wrap{background:#141720;color:#C8CDD8;min-height:600px;border-radius:var(--border-radius-lg);overflow:hidden}
+.topbar{background:#0E1118;border-bottom:1px solid #252A3A;padding:8px 16px;display:flex;align-items:center;gap:12px}
+.logo{color:#E8243C;font-weight:500;font-size:15px;letter-spacing:.5px}
+.well-num{color:#C8CDD8;font-size:13px}
+.date-chip{background:#1E2230;border:1px solid #2A2F3E;border-radius:6px;padding:3px 10px;font-size:12px;color:#8A8F9C}
+.topbar-right{margin-left:auto;font-size:12px;color:#8A8F9C}
+
+.status-bar{background:#0E1118;border-bottom:1px solid #252A3A;padding:6px 16px;display:flex;gap:6px;align-items:center}
+.stab{border-radius:6px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;border:none}
+.stab-ok{background:#1A3A28;color:#4ADE80}
+.stab-red{background:#3A1A1A;color:#F87171}
+.stab-gray{background:#1E2230;color:#8A8F9C}
+.stab-active{background:#1E3A6E;color:#7EB6FF;outline:2px solid #3A6EB8}
+
+.tabs-row{background:#0E1118;border-bottom:1px solid #252A3A;padding:0 16px;display:flex;gap:4px}
+.tab{padding:8px 14px;font-size:12px;color:#8A8F9C;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab-active{color:#FFFFFF;border-bottom:2px solid #5B8CFF}
+.tab:hover:not(.tab-active){color:#C0C5D4}
+
+.content{padding:16px}
+.section{margin-bottom:24px}
+.section-title{font-size:13px;font-weight:500;color:#E0E4EF;padding:0 0 10px 10px;border-left:3px solid #5B8CFF;border-radius:0;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:#8A8F9C}
+.field input,.field select{background:#1A1E2B;border:1px solid #3A3F50;border-radius:6px;padding:6px 10px;color:#E0E4EF;font-size:12px;outline:none}
+.field input:focus,.field select:focus{border-color:#5B8CFF}
+.field input::placeholder{color:#4A4F60}
+
+.divider{border:none;border-top:1px solid #2A2F3E;margin:20px 0}
+
+.table-wrap{border:1px solid #2A2F3E;border-radius:8px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:#252A3A}
+thead th{padding:8px 12px;text-align:left;color:#8A8F9C;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+tbody tr:nth-child(even){background:#1E2230}
+tbody tr:nth-child(odd){background:#181C28}
+tbody td{padding:8px 12px;color:#C8CDD8;border-top:1px solid #2A2F3E}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px}
+.badge-warn{background:#2A1F0A;color:#F59E0B}
+.badge-ok{background:#0A2A18;color:#34D399}
+
+.add-btn{background:#1E2230;border:1px solid #3A3F50;border-radius:6px;padding:5px 12px;color:#8A8F9C;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.add-btn:hover{background:#252A3A;color:#C0C5D4}
+.add-btn i{font-size:14px}
+
+.textarea-field textarea{background:#1A1E2B;border:1px solid #3A3F50;border-radius:6px;padding:8px 10px;color:#E0E4EF;font-size:12px;width:100%;min-height:72px;resize:vertical;outline:none;font-family:var(--font-sans)}
+.textarea-field textarea:focus{border-color:#5B8CFF}
+.textarea-field label{font-size:11px;color:#8A8F9C;display:block;margin-bottom:4px}
+
+.footer{background:#0E1118;border-top:1px solid #252A3A;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.btn-primary{background:#5B8CFF;border:none;border-radius:6px;padding:7px 20px;color:#fff;font-size:13px;font-weight:500;cursor:pointer}
+.btn-primary:hover{background:#4A7AEF}
+.btn-ghost{background:transparent;border:1px solid #3A3F50;border-radius:6px;padding:7px 16px;color:#8A8F9C;font-size:13px;cursor:pointer}
+.btn-ghost:hover{background:#1E2230}
+
+.info-row{display:flex;gap:6px;align-items:center;font-size:12px;color:#8A8F9C;margin-bottom:8px}
+.info-row strong{color:#C8CDD8;font-weight:500}
+</style>
+
+<div class="wrap">
+  <div class="topbar">
+    <span class="logo">ЛК ЛУКОЙЛ</span>
+    <span class="well-num" style="color:#5B8CFF;font-weight:500">5000</span>
+    <div class="date-chip"><i class="ti ti-calendar" aria-hidden="true" style="font-size:12px;vertical-align:-1px;margin-right:4px"></i>16.04.2026</div>
+    <div class="topbar-right">vladimirkaverzin@gmail.com</div>
+  </div>
+
+  <div class="status-bar">
+    <button class="stab stab-gray">Оперативное</button>
+    <button class="stab stab-gray">НБ</button>
+    <button class="stab stab-gray">Глубина цели</button>
+    <button class="stab stab-active">Буровой мастер</button>
+    <button class="stab stab-gray">ГТН</button>
+    <button class="stab stab-gray">НПБ</button>
+    <button class="stab stab-gray">Расход</button>
+    <button class="stab stab-red">Долота</button>
+    <button class="stab stab-ok">Документация</button>
+  </div>
+
+  <div class="tabs-row">
+    <div class="tab">Крепление</div>
+    <div class="tab">Акт контроля инц. параметров</div>
+    <div class="tab">Акт сдачи-приёмки ГР</div>
+    <div class="tab tab-active">Акт расследования</div>
+  </div>
+
+  <div class="content">
+
+    <div class="section">
+      <div class="section-title">Заголовок</div>
+      <div class="grid3" style="margin-bottom:10px">
+        <div class="field">
+          <label>Дата утверждения</label>
+          <input type="text" placeholder="дд.мм.гггг">
+        </div>
+        <div class="field">
+          <label>Дата составления акта</label>
+          <input type="text" placeholder="дд.мм.гггг">
+        </div>
+        <div class="field">
+          <label>Председатель комиссии</label>
+          <input type="text" placeholder="ФИО">
+        </div>
+      </div>
+      <div class="field">
+        <label>Члены комиссии</label>
+        <input type="text" placeholder="Начните вводить ФИО..." style="margin-bottom:6px">
+        <button class="add-btn"><i class="ti ti-plus" aria-hidden="true"></i>Добавить члена комиссии</button>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-title">НПВ</div>
+      <div style="margin-bottom:10px">
+        <button class="add-btn"><i class="ti ti-plus" aria-hidden="true"></i>Добавить НПВ</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Секция</th><th>Начало</th><th>Конец</th><th>Длительность</th><th>Классификация</th><th>Сервис. орг.</th><th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Кондуктор</td>
+              <td>2076-04-13 04:00</td>
+              <td>2076-04-13 06:00</td>
+              <td>2</td>
+              <td><span class="badge badge-warn">Орг. простой / Отказ оборудования</span></td>
+              <td>Оператор — СЗС</td>
+              <td><i class="ti ti-trash" aria-hidden="true" style="color:#F87171;cursor:pointer;font-size:15px" title="Удалить"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-title">Информация по скважине</div>
+      <div class="grid3" style="margin-bottom:10px">
+        <div class="field"><label>Номер скважины</label><input type="text" value="5000"></div>
+        <div class="field"><label>Название скважины</label><input type="text" value="VTU_50_5000"></div>
+        <div class="field"><label>Глубина забоя, м</label><input type="text" value="600.0"></div>
+        <div class="field"><label>Текущий этап скважины</label><input type="text" value="Бурение"></div>
+        <div class="field"><label>Заказчик</label><input type="text" value='ООО "ЛУКОЙЛ-Западная Сибирь"'></div>
+        <div class="field"><label>Буровой подрядчик</label><input type="text" value='ООО "Сибпромсервис"'></div>
+        <div class="field"><label>Диаметр скважины (ниже башмака), мм</label><input type="text" value="295.3"></div>
+        <div class="field"><label>Буровая установка</label><input type="text" value="123"></div>
+        <div class="field"><label>Верхний силовой привод</label><input type="text" value="DCH082-91"></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-title">Конструкция скважины</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Наименование</th><th>Диам. долота, мм</th><th>Глубина спуска, проект</th><th>Глубина спуска, факт</th><th>+/−</th><th>Примечание</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Кондуктор</td><td>295.3</td><td>320</td><td>—</td><td>0</td><td></td></tr>
+            <tr><td>Пилотный ствол I</td><td>220.7</td><td>3220</td><td>—</td><td>3220</td><td></td></tr>
+            <tr><td>Эксплуатационная колонна</td><td>219.7</td><td>3185</td><td>3173</td><td>−40</td><td></td></tr>
+            <tr><td>Хвостовик I</td><td>155.6</td><td>3672</td><td>—</td><td>3672</td><td></td></tr>
+            <tr><td>Хвостовик II</td><td>155.6</td><td>3675</td><td>—</td><td>3675</td><td></td></tr>
+            <tr><td>Водоотделяющая</td><td>155.6</td><td>7777</td><td>8000</td><td>+325</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-title">Режим бурения</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>Осевая нагрузка</th><th>Давление на манифольде</th><th>Расход</th><th>Скорость вращения ротора</th><th>Момент на роторе</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#8A8F9C">План</td>
+              <td>—</td><td>—</td><td><span class="badge badge-ok">400</span></td><td>—</td><td>—</td>
+            </tr>
+            <tr>
+              <td style="color:#8A8F9C">Факт</td>
+              <td>34</td><td>81</td><td>30</td><td>76</td><td>76</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-title">Дополнительная информация об инцидентах</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="textarea-field"><label>Краткая хронология инцидента</label><textarea placeholder="Введите текст..."></textarea></div>
+        <div class="textarea-field"><label>Сведения о зоне осложнений в структуре стола скважины</label><textarea placeholder="Введите текст..."></textarea></div>
+        <div class="textarea-field"><label>Описание обстоятельств технологического инцидента</label><textarea placeholder="Введите текст..."></textarea></div>
+        <div class="textarea-field"><label>Оборудование, оставшееся в скважине в связи с технологическим инцидентом</label><textarea placeholder="Введите текст..."></textarea></div>
+        <div class="textarea-field"><label>Причины технологического инцидента</label><textarea placeholder="Введите текст..."></textarea></div>
+        <div class="textarea-field"><label>Критические факторы возникновения</label><textarea placeholder="Введите текст..."></textarea></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <button class="btn-primary"><i class="ti ti-device-floppy" aria-hidden="true" style="font-size:14px;vertical-align:-1px;margin-right:6px"></i>Сохранить</button>
+    <button class="btn-ghost">Отмена</button>
+    <span style="margin-left:auto;font-size:11px;color:#4A4F60">Последнее сохранение: 15:42</span>
+  </div>
+</div>
