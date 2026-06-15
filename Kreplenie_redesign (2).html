@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Крепление — акт по креплению колонны</title>
+<style>
+  :root{
+    --bg:#1b2330;--panel:#222c3c;--panel-2:#1e2735;--field:#1a212d;
+    --field-border:#3a475a;--field-border-focus:#5b7da3;--text:#e6ebf2;
+    --muted:#9aa7b8;--label:#aeb9c8;--accent:#4d7fb0;--section:#cdd6e2;
+    --divider:#33404f;--radius:5px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:"Segoe UI",Roboto,Arial,sans-serif;font-size:13px;line-height:1.35;}
+  .toolbar{display:flex;align-items:center;gap:10px;background:#2a3445;
+    padding:8px 14px;border-bottom:1px solid var(--divider);position:sticky;top:0;z-index:5;}
+  .toolbar select{background:var(--field);color:var(--text);border:1px solid var(--field-border);
+    border-radius:var(--radius);padding:6px 10px;min-width:240px;}
+  .toolbar .icon-btn{background:none;border:none;color:var(--muted);font-size:16px;
+    cursor:pointer;padding:4px 6px;border-radius:4px;}
+  .toolbar .icon-btn:hover{background:rgba(255,255,255,.07);color:#fff}
+  .toolbar .icon-btn.danger:hover{color:#e06464}
+
+  .wrap{max-width:1280px;margin:0 auto;padding:20px 24px 60px}
+
+  .section{margin-top:26px}
+  .section:first-of-type{margin-top:8px}
+  .section__head{font-size:16px;font-weight:600;color:var(--section);
+    padding-bottom:8px;margin-bottom:16px;border-bottom:1px solid var(--divider);letter-spacing:.2px;}
+  .subhead{font-size:13px;font-weight:600;color:var(--section);
+    margin:18px 0 10px;opacity:.95;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;column-gap:48px;row-gap:12px;}
+  .grid.one-col{grid-template-columns:1fr}
+
+  .row{display:grid;grid-template-columns:210px 1fr;align-items:center;gap:14px;min-height:34px;}
+  .row > label{color:var(--label);font-size:12.5px;text-align:left;user-select:none;}
+  .row.full{grid-column:1 / -1}
+  .row.full > label{align-self:start;padding-top:7px}
+
+  .control{position:relative;display:flex;align-items:stretch}
+  .control input[type=text],.control input[type=date],.control textarea,.control select{
+    width:100%;background:var(--field);color:var(--text);border:1px solid var(--field-border);
+    border-radius:var(--radius);padding:7px 10px;font-size:13px;outline:none;transition:border-color .15s;}
+  .control textarea{resize:vertical;min-height:64px;line-height:1.45}
+  .control input::placeholder,.control textarea::placeholder{color:#5e6b7d}
+  .control input:focus,.control textarea:focus,.control select:focus{border-color:var(--field-border-focus);}
+
+  .with-unit{display:flex;gap:0}
+  .with-unit input{flex:1 1 auto;min-width:0;border-top-right-radius:0;border-bottom-right-radius:0;border-right:none;}
+  .with-unit .unit{flex:0 0 auto;width:auto;background:var(--panel-2);color:var(--muted);
+    border:1px solid var(--field-border);border-left:1px solid var(--divider);
+    border-top-left-radius:0;border-bottom-left-radius:0;
+    border-top-right-radius:var(--radius);border-bottom-right-radius:var(--radius);
+    padding:7px 6px;cursor:pointer;text-align:center;}
+  .with-unit .unit:focus{border-color:var(--field-border-focus)}
+
+  .control.date input{padding-right:30px}
+  .control.date::after{content:"\1F4C5";position:absolute;right:9px;top:50%;
+    transform:translateY(-50%);opacity:.5;pointer-events:none;font-size:13px;}
+
+  /* Editable tables */
+  .table-card{background:var(--panel-2);border:1px solid var(--divider);border-radius:var(--radius);overflow:hidden;}
+  .table-card__head{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 14px;border-bottom:1px solid var(--divider);}
+  .table-card__head h4{margin:0;font-size:13px;font-weight:600;color:var(--section)}
+  /* "+ Новый …" outlined button */
+  .add-btn{background:transparent;color:var(--text);border:1px solid var(--field-border);
+    border-radius:var(--radius);padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;gap:7px;line-height:1;transition:all .15s;}
+  .add-btn .ic{font-size:14px;line-height:1}
+  .add-btn:hover{border-color:var(--field-border-focus);background:rgba(91,125,163,.12)}
+  table.col-table{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.col-table th{text-align:left;color:var(--muted);font-weight:500;padding:9px 12px;
+    border-bottom:1px solid var(--divider);background:#1b2330;white-space:nowrap;}
+  table.col-table td{padding:6px 10px;color:var(--text);vertical-align:middle}
+  table.col-table input,table.col-table select{width:100%;background:var(--field);color:var(--text);
+    border:1px solid var(--field-border);border-radius:4px;padding:5px 7px;font-size:12.5px;}
+  .empty-row td{text-align:center;color:#5e6b7d;padding:22px 14px}
+  /* per-row action icons (pencil / trash) */
+  .row-ctrls{display:flex;align-items:center;gap:10px;justify-content:flex-start}
+  .row-ctrls .ico{background:none;border:none;cursor:pointer;font-size:15px;padding:2px;line-height:1;
+    color:#9aa7b8;transition:color .15s;}
+  .row-ctrls .ico.edit:hover{color:#d98b3a}
+  .row-ctrls .ico.del:hover{color:#e06464}
+  th.col-ctrls,td.col-ctrls{width:64px}
+
+  .split{display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:start}
+
+  .seg{display:inline-flex;border:1px solid var(--field-border);border-radius:var(--radius);overflow:hidden}
+  .seg button{background:var(--field);color:var(--muted);border:none;padding:7px 18px;cursor:pointer;font-size:12.5px}
+  .seg button.active{background:var(--accent);color:#fff}
+
+  .reagent-block{background:var(--panel-2);border:1px solid var(--divider);
+    border-radius:var(--radius);padding:14px 16px;margin-top:12px;}
+  .reagent-block > .blk-title{font-size:12.5px;font-weight:600;color:var(--section);margin-bottom:12px}
+
+  @media (max-width:1080px){
+    .grid{grid-template-columns:1fr}
+    .split{grid-template-columns:1fr}
+    .row{grid-template-columns:170px 1fr}
+  }
+  @media (max-width:560px){
+    .row{grid-template-columns:1fr;align-items:start;gap:4px}
+    .row > label{padding-top:0}
+  }
+  .hint{color:var(--muted);font-size:11.5px;margin:-8px 0 16px;font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <select>
+    <option>Секция Кондуктор</option>
+    <option>Секция Водоотделяющая</option>
+    <option>Секция Эксплуатационная</option>
+  </select>
+  <button class="icon-btn" title="Сохранить">💾</button>
+  <button class="icon-btn danger" title="Отменить">✕</button>
+</div>
+
+<div class="wrap">
+  <p class="hint">Акт по креплению колонны — полная форма. Лейбл слева, единицы встроены в поле, таблицы с действиями ✎/🗑.</p>
+
+  <!-- 0. ОБЩЕЕ / ШАПКА АКТА -->
+  <div class="section">
+    <div class="section__head">Общее</div>
+    <div class="grid">
+      <div class="row"><label>Скважина №</label><div class="control"><input type="text"></div></div>
+      <div class="row"><label>Куст №</label><div class="control"><input type="text"></div></div>
+      <div class="row"><label>Месторождение</label><div class="control"><input type="text"></div></div>
+      <div class="row"><label>ТПП</label><div class="control"><input type="text"></div></div>
+      <div class="row"><label>Дата проведения работы</label><div class="control date"><input type="text" placeholder="дд.мм.гггг"></div></div>
+      <div class="row"><label>Что цементировалось</label><div class="control"><select><option>Кондуктор</option><option>Направление</option><option>Техническая колонна</option><option>Эксплуатационная колонна</option><option>Хвостовик</option></select></div></div>
+    </div>
+  </div>
+
+      <!-- 1. ПАРАМЕТРЫ КОЛОННЫ -->
+      <div class="section">
+        <div class="section__head">Параметры колонны и описание работы</div>
+        <div class="grid">
+          <div class="row"><label>Диаметр ствола скважины</label><div class="control with-unit"><input type="text"><select class="unit"><option>мм</option></select></div></div>
+          <div class="row"><label>Диаметр колонны</label><div class="control with-unit"><input type="text"><select class="unit"><option>мм</option></select></div></div>
+          <div class="row"><label>Внутренний диаметр колонны</label><div class="control with-unit"><input type="text"><select class="unit"><option>мм</option></select></div></div>
+          <div class="row"><label>Глубина забоя</label><div class="control with-unit"><input type="text"><select class="unit"><option>м</option></select></div></div>
+          <div class="row"><label>Башмак</label><div class="control with-unit"><input type="text"><select class="unit"><option>м</option></select></div></div>
+          <div class="row"><label>ЦКОД</label><div class="control with-unit"><input type="text"><select class="unit"><option>м</option></select></div></div>
+          <div class="row"><label>МСЦ</label><div class="control with-unit"><input type="text"><select class="unit"><option>м</option></select></div></div>
+          <div class="row"><label>Цементировочная головка</label><div class="control with-unit"><input type="text"><select class="unit"><option>мм</option></select></div></div>
+          <div class="row"><label>Цементировочная пробка</label><div class="control with-unit"><input type="text"><select class="unit"><option>мм</option></select></div></div>
+          <div class="row"><label>Центраторы NORD</label><div class="control with-unit"><input type="text"><select class="unit"><option>шт</option></select></div></div>
+          <div class="row"><label>Центратор жесткий</label><div class="control with-unit"><input type="text"><select class="unit"><option>шт</option></select></div></div>
+          <div class="row"><label>Центратор пружинный</label><div class="control with-unit"><input type="text"><select class="unit"><option>шт</option></select></div></div>
+          <div class="row"><label>ЦПН</label><div class="control with-unit"><input type="text"><select class="unit"><option>шт</option></select></div></div>
+          <div class="row"><label>КС</label><div class="control with-unit"><input type="text"><select class="unit"><option>шт</option></select></div></div>
+        </div>
+      </div>
+
+      <!-- 1b. ПАРАМЕТРЫ ОБСАДНОЙ КОЛОННЫ (на всю ширину) -->
+      <div class="section">
+        <div class="section__head">Параметры обсадной колонны</div>
+        <div class="table-card">
+          <div class="table-card__head"><h4>Длины труб по секциям</h4><button class="add-btn" data-add="casing"><span class="ic">✚</span>Новый интервал</button></div>
+          <table class="col-table" id="tbl-casing">
+            <thead><tr><th class="col-ctrls"></th><th>Глубина от, м</th><th>Глубина до, м</th><th>Внут. диаметр, мм</th></tr></thead>
+            <tbody><tr class="empty-row"><td colspan="4">Нет данных</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. ОТВЕТСТВЕННЫЕ ЛИЦА -->
+      <div class="section">
+        <div class="section__head">Ответственные лица</div>
+        <div class="grid">
+          <div class="row"><label>Заказчик (компания)</label><div class="control"><input type="text"></div></div>
+          <div class="row"><label>Супервайзер (ФИО)</label><div class="control"><input type="text"></div></div>
+          <div class="row"><label>Бур. подрядчик (компания)</label><div class="control"><input type="text"></div></div>
+          <div class="row"><label>Мастер (ФИО)</label><div class="control"><input type="text"></div></div>
+          <div class="row"><label>Цементирование (компания)</label><div class="control"><input type="text"></div></div>
+          <div class="row"><label>Ответственный (ФИО)</label><div class="control"><input type="text"></div></div>
+        </div>
+      </div>
+
+      <!-- 3. ПАРАМЕТРЫ БУРОВОГО РАСТВОРА -->
+      <div class="section">
+        <div class="section__head">Параметры бурового раствора</div>
+        <div class="grid">
+          <div class="row"><label>Плотность</label><div class="control with-unit"><input type="text"><select class="unit"><option>г/см³</option></select></div></div>
+          <div class="row"><label>Условная вязкость</label><div class="control with-unit"><input type="text"><select class="unit"><option>с</option></select></div></div>
+          <div class="row"><label>ПВ (пластич. вязкость)</label><div class="control with-unit"><input type="text"><select class="unit"><option>сП</option></select></div></div>
+          <div class="row"><label>Водоотдача</label><div class="control"><input type="text"></div></div>
+          <div class="row"><label>СНС</label><div class="control"><input type="text"></div></div>
+          <div class="row"><label>pH</label><div class="control"><input type="text"></div></div>
+          <div class="row"><label>Место отбора</label><div class="control"><input type="text"></div></div>
+        </div>
+      </div>
+
+      <!-- 4. ПРОМЫВКА / ЭТАПЫ -->
+      <div class="section">
+        <div class="section__head">Промывка и этапы</div>
+        <div class="grid">
+          <div class="row"><label>Начало спуска</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Конец спуска</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Начало промывки</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Конец промывки</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Промывки на глубинах</label><div class="control with-unit"><input type="text"><select class="unit"><option>м</option></select></div></div>
+          <div class="row"><label>Расход</label><div class="control with-unit"><input type="text"><select class="unit"><option>л/мин</option></select></div></div>
+          <div class="row"><label>Давление</label><div class="control with-unit"><input type="text"><select class="unit"><option>атм</option></select></div></div>
+          <div class="row"><label>Осложнения</label><div class="control"><input type="text"></div></div>
+        </div>
+      </div>
+
+      <!-- 5. ЛОГИСТИКА -->
+      <div class="section">
+        <div class="section__head">Логистика</div>
+        <div class="grid">
+          <div class="row"><label>Выезд из гаража</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Прибытие на объект</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Начало работ</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Окончание работ</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Убытие с объекта</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Прибытие на базу</label><div class="control date"><input type="text" placeholder="дд.мм.гггг чч:мм"></div></div>
+          <div class="row"><label>Общий пробег</label><div class="control with-unit"><input type="text"><select class="unit"><option>км</option></select></div></div>
+        </div>
+      </div>
+
+      <!-- 6. ПРОМЫВОЧНЫЕ ЖИДКОСТИ (БУФЕР) -->
+      <div class="section">
+        <div class="section__head">Промывочные жидкости (буфер)</div>
+        <div class="reagent-block">
+          <div class="blk-title">Буфер: техническая вода</div>
+          <div class="grid">
+            <div class="row"><label>Объём</label><div class="control with-unit"><input type="text"><select class="unit"><option>м³</option></select></div></div>
+            <div class="row"><label>Плотность</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+          </div>
+        </div>
+        <div class="reagent-block">
+          <div class="blk-title">Хим. буфер: тех. вода + НИКА-4</div>
+          <div class="grid">
+            <div class="row"><label>Объём</label><div class="control with-unit"><input type="text"><select class="unit"><option>м³</option></select></div></div>
+            <div class="row"><label>Плотность</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+            <div class="row"><label>Количество реагента</label><div class="control with-unit"><input type="text"><select class="unit"><option>л</option></select></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. ТАМПОНАЖНЫЕ РАСТВОРЫ -->
+      <div class="section">
+        <div class="section__head">Тампонажные растворы</div>
+
+        <div class="reagent-block">
+          <div class="blk-title">Тампонажный материал</div>
+          <div class="grid">
+            <div class="row"><label>Количество</label><div class="control with-unit"><input type="text"><select class="unit"><option>т</option></select></div></div>
+            <div class="row"><label>Объём (план)</label><div class="control with-unit"><input type="text"><select class="unit"><option>м³</option></select></div></div>
+            <div class="row"><label>Плотность</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+            <div class="row"><label>Пеногаситель</label><div class="control with-unit"><input type="text"><select class="unit"><option>%</option></select></div></div>
+            <div class="row full"><label>Хим. реагенты</label><div class="control"><input type="text" placeholder="наименование и %-содержание"></div></div>
+          </div>
+        </div>
+
+        <div class="reagent-block">
+          <div class="blk-title">Лёгкий цементный раствор</div>
+          <div class="grid">
+            <div class="row"><label>Количество</label><div class="control with-unit"><input type="text"><select class="unit"><option>т</option></select></div></div>
+            <div class="row"><label>Объём (план)</label><div class="control with-unit"><input type="text"><select class="unit"><option>м³</option></select></div></div>
+            <div class="row"><label>Плотность</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+            <div class="row"><label>Пеногаситель</label><div class="control with-unit"><input type="text"><select class="unit"><option>%</option></select></div></div>
+            <div class="row full"><label>Хим. реагенты</label><div class="control"><input type="text" placeholder="наименование и %-содержание"></div></div>
+          </div>
+        </div>
+
+        <div class="reagent-block">
+          <div class="blk-title">Облегчённый цементный раствор</div>
+          <div class="grid">
+            <div class="row"><label>Количество</label><div class="control with-unit"><input type="text"><select class="unit"><option>т</option></select></div></div>
+            <div class="row"><label>Объём (план)</label><div class="control with-unit"><input type="text"><select class="unit"><option>м³</option></select></div></div>
+            <div class="row"><label>Плотность</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+            <div class="row"><label>Пеногаситель</label><div class="control with-unit"><input type="text"><select class="unit"><option>%</option></select></div></div>
+            <div class="row full"><label>Хим. реагенты</label><div class="control"><input type="text" placeholder="наименование и %-содержание"></div></div>
+          </div>
+        </div>
+
+        <div class="reagent-block">
+          <div class="blk-title">Цементный раствор нормальной плотности</div>
+          <div class="grid">
+            <div class="row"><label>Количество</label><div class="control with-unit"><input type="text"><select class="unit"><option>т</option></select></div></div>
+            <div class="row"><label>Объём (план)</label><div class="control with-unit"><input type="text"><select class="unit"><option>м³</option></select></div></div>
+            <div class="row"><label>Плотность</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+            <div class="row"><label>Ускоритель схватывания</label><div class="control with-unit"><input type="text"><select class="unit"><option>%</option></select></div></div>
+            <div class="row full"><label>Хим. реагенты</label><div class="control"><input type="text" placeholder="наименование и %-содержание"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. ЗАМЕЩЕНИЕ -->
+      <div class="section">
+        <div class="section__head">Замещение</div>
+        <div class="grid">
+          <div class="row"><label>Объём замещения (план)</label><div class="control with-unit"><input type="text"><select class="unit"><option>м³</option></select></div></div>
+          <div class="row"><label>Объём замещения (факт)</label><div class="control with-unit"><input type="text"><select class="unit"><option>м³</option></select></div></div>
+          <div class="row"><label>Плотность замещ. (план)</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+          <div class="row"><label>Плотность замещ. (факт)</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+          <div class="row"><label>Давление рабочее</label><div class="control with-unit"><input type="text"><select class="unit"><option>атм</option></select></div></div>
+          <div class="row"><label>Давление СТОП</label><div class="control with-unit"><input type="text"><select class="unit"><option>атм</option></select></div></div>
+          <div class="row"><label>Выход на устье</label><div class="control"><input type="text" placeholder="да/нет / объём"></div></div>
+          <div class="row"><label>Плотность на устье</label><div class="control with-unit"><input type="text"><select class="unit"><option>кг/м³</option></select></div></div>
+          <div class="row"><label>ОЗЦ</label><div class="control with-unit"><input type="text"><select class="unit"><option>ч</option></select></div></div>
+        </div>
+      </div>
+
+      <!-- 9. ЖИДКОСТЬ ЗАТВОРЕНИЯ -->
+      <div class="section">
+        <div class="section__head">Параметры жидкости затворения</div>
+        <div class="grid">
+          <div class="row"><label>Темп. окружающей среды</label><div class="control with-unit"><input type="text"><select class="unit"><option>°C</option></select></div></div>
+          <div class="row"><label>Расчётная Т тех. воды</label><div class="control with-unit"><input type="text"><select class="unit"><option>°C</option></select></div></div>
+          <div class="row"><label>Хлориды</label><div class="control with-unit"><input type="text"><select class="unit"><option>мг/л</option></select></div></div>
+        </div>
+        <div class="subhead">Подача тех. жидкости с буровой</div>
+        <div class="table-card">
+          <div class="table-card__head"><h4>Агрегаты</h4><button class="add-btn" data-add="agg"><span class="ic">✚</span>Новый агрегат</button></div>
+          <table class="col-table" id="tbl-agg">
+            <thead><tr><th class="col-ctrls"></th><th>Источник / агрегат</th><th style="width:140px">Подача, л/с</th><th style="width:140px">Т тех. воды, °C</th></tr></thead>
+            <tbody>
+              <tr><td class="col-ctrls"><span class="row-ctrls"><button class="ico edit" title="Редактировать">✎</button><button class="ico del" title="Удалить">🗑</button></span></td><td><input type="text" value="ЦТОС-5-80"></td><td><input type="text"></td><td><input type="text"></td></tr>
+              <tr><td class="col-ctrls"><span class="row-ctrls"><button class="ico edit" title="Редактировать">✎</button><button class="ico del" title="Удалить">🗑</button></span></td><td><input type="text" value="ПЦТ-50"></td><td><input type="text"></td><td><input type="text"></td></tr>
+              <tr><td class="col-ctrls"><span class="row-ctrls"><button class="ico edit" title="Редактировать">✎</button><button class="ico del" title="Удалить">🗑</button></span></td><td><input type="text" value="Бур. раствор"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 10. ПРОЦЕССЫ -->
+      <div class="section">
+        <div class="section__head">Процессы</div>
+        <div class="grid">
+          <div class="row"><label>Тех. дежурство</label><div class="control with-unit"><input type="text"><select class="unit"><option>ч</option></select></div></div>
+          <div class="row"><label>Время ожидания</label><div class="control with-unit"><input type="text"><select class="unit"><option>ч</option></select></div></div>
+        </div>
+      </div>
+
+      <!-- 11. ТАБЛИЦА: ИСПОЛЬЗОВАННЫЕ МАТЕРИАЛЫ -->
+      <div class="section">
+        <div class="section__head">Использованные материалы</div>
+        <div class="table-card">
+          <div class="table-card__head"><h4>Материалы</h4><button class="add-btn" data-add="mat"><span class="ic">✚</span>Новый материал</button></div>
+          <table class="col-table" id="tbl-mat">
+            <thead><tr><th class="col-ctrls"></th><th>Наименование</th><th style="width:140px">Ед. изм.</th><th style="width:150px">Общее количество</th><th>Собственник</th></tr></thead>
+            <tbody><tr class="empty-row"><td colspan="6">Нет данных — нажмите «+»</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 12. ТАБЛИЦА: ОПИСАНИЕ РАБОТЫ -->
+      <div class="section">
+        <div class="section__head">Описание работы</div>
+        <div class="table-card">
+          <div class="table-card__head"><h4>Проводимые операции</h4><button class="add-btn" data-add="op"><span class="ic">✚</span>Новая операция</button></div>
+          <table class="col-table" id="tbl-op">
+            <thead><tr><th class="col-ctrls"></th>
+              <th>Операция</th><th style="width:110px">Начало</th><th style="width:110px">Конец</th>
+              <th style="width:90px">Подача, л/с</th><th style="width:80px">P min</th><th style="width:80px">P max</th>
+              <th style="width:90px">Объём, м³</th><th style="width:100px">Плотн., кг/м³</th></tr></thead>
+            <tbody><tr class="empty-row"><td colspan="10">Нет данных — нажмите «+»</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 13. ТАБЛИЦА: СПЕЦТЕХНИКА -->
+      <div class="section">
+        <div class="section__head">Используемая спецтехника</div>
+        <div class="table-card">
+          <div class="table-card__head"><h4>Спецтехника</h4><button class="add-btn" data-add="tech"><span class="ic">✚</span>Новая техника</button></div>
+          <table class="col-table" id="tbl-tech">
+            <thead><tr><th class="col-ctrls"></th><th>Наименование</th><th style="width:120px">Гос. №</th><th style="width:100px">Кол-во</th><th style="width:200px">Время работы верх. оборуд.</th><th>Собственник</th></tr></thead>
+            <tbody><tr class="empty-row"><td colspan="7">Нет данных — нажмите «+»</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 14. ТАБЛИЦА: РАСТАРКА -->
+      <div class="section">
+        <div class="section__head">Растарка автомобилей (завезено согласно ТТН)</div>
+        <div class="table-card">
+          <div class="table-card__head"><h4>Растарка</h4><button class="add-btn" data-add="ttn"><span class="ic">✚</span>Новая запись</button></div>
+          <table class="col-table" id="tbl-ttn">
+            <thead><tr><th class="col-ctrls"></th><th>Тип а/м</th><th style="width:130px">№ пут. листа</th><th style="width:150px">Марка цемента</th><th style="width:120px">Дата</th><th style="width:120px">№ ТТН</th><th style="width:110px">Кол-во, т</th></tr></thead>
+            <tbody><tr class="empty-row"><td colspan="8">Нет данных — нажмите «+»</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 15. ТАБЛИЦА: ПЕРСОНАЛ -->
+      <div class="section">
+        <div class="section__head">Персонал подрядчика по цементированию</div>
+        <div class="table-card">
+          <div class="table-card__head"><h4>Персонал</h4><button class="add-btn" data-add="pers"><span class="ic">✚</span>Новый сотрудник</button></div>
+          <table class="col-table" id="tbl-pers">
+            <thead><tr><th class="col-ctrls"></th><th style="width:50px">№</th><th>ФИО</th><th style="width:220px">Должность</th></tr></thead>
+            <tbody><tr class="empty-row"><td colspan="5">Нет данных — нажмите «+»</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 16. СЛУЖЕБНЫЕ -->
+      <div class="section">
+        <div class="section__head">Заключение</div>
+        <div class="grid one-col">
+          <div class="row"><label>Работа выполнена по программе</label>
+            <div class="seg"><button class="active">ДА</button><button>НЕТ</button></div>
+          </div>
+          <div class="row full"><label>Примечание</label><div class="control"><textarea placeholder="Примечания к акту…"></textarea></div></div>
+        </div>
+      </div>
+
+      <!-- 17. ПОДПИСИ (печать) -->
+      <div class="section">
+        <div class="section__head">Подписи (печатная форма)</div>
+        <div class="grid">
+          <div class="row"><label>Буровой супервайзер</label><div class="control"><input type="text" placeholder="ФИО"></div></div>
+          <div class="row"><label>Представитель заказчика</label><div class="control"><input type="text" placeholder="ФИО"></div></div>
+          <div class="row"><label>Подрядчик по бурению</label><div class="control"><input type="text" placeholder="ФИО"></div></div>
+          <div class="row"><label>Подрядчик по цементированию</label><div class="control"><input type="text" placeholder="ФИО"></div></div>
+        </div>
+      </div>
+
+</div>
+
+<script>
+  const CTRL = '<td class="col-ctrls"><span class="row-ctrls"><button class="ico edit" title="Редактировать">✎</button><button class="ico del" title="Удалить">🗑</button></span></td>';
+  const tmpl = {
+    casing: CTRL + '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>',
+    mat:    CTRL + '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>',
+    op:     CTRL + '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>',
+    tech:   CTRL + '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>',
+    ttn:    CTRL + '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>',
+    pers:   CTRL + '<td class="pers-n"></td><td><input type="text"></td><td><input type="text"></td>',
+    agg:    CTRL + '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>'
+  };
+  const tblId = {casing:'tbl-casing',mat:'tbl-mat',op:'tbl-op',tech:'tbl-tech',ttn:'tbl-ttn',pers:'tbl-pers',agg:'tbl-agg'};
+  function renumber(tb){[...tb.querySelectorAll('.pers-n')].forEach((c,i)=>c.textContent=i+1);}
+  document.querySelectorAll('[data-add]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const k=btn.dataset.add, tb=document.getElementById(tblId[k]).querySelector('tbody');
+      const empty=tb.querySelector('.empty-row'); if(empty)empty.remove();
+      const tr=document.createElement('tr'); tr.innerHTML=tmpl[k]; tb.appendChild(tr);
+      if(k==='pers')renumber(tb);
+    });
+  });
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.ico');
+    if(btn && btn.classList.contains('del')){
+      const tr=btn.closest('tr'), tb=tr.parentElement; tr.remove();
+      if(tb===document.querySelector('#tbl-pers tbody'))renumber(tb);
+    }
+  });
+  document.querySelectorAll('.seg').forEach(seg=>{
+    seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+      seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+    }));
+  });
+</script>
+</body>
+</html>
